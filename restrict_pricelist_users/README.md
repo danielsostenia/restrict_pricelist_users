@@ -36,15 +36,18 @@ Odoo addon that restricts access to **Product Pricelists** using a Many2many fie
 - Model: `models/product_pricelist.py`
   - adds `allowed_users = fields.Many2many('res.users', ...)`
 - Security: `security/pricelist_rules.xml`
-  - Rule “Own pricelists” domain:
-    - `['|', ('allowed_users', 'in', user.id), ('allowed_users', '=', False)]`
-  - Rule “All pricelists” domain:
-    - `[]` (sees everything)
+  - Groups live under the **Pricelists** privilege (`res.groups.privilege`) in the Sales category.
+  - Odoo 20 uses `ir.access` (permissions per group are OR-ed, restrictions without group are AND-ed),
+    so visibility is enforced by one global *restriction* on read:
+    - user in **Own Pricelists** and not in **All Pricelists**:
+      `['|', ('allowed_users', 'in', user.id), ('allowed_users', '=', False)]`
+    - any other user: `[]` (no restriction)
 
 ## Notes / limitations
 - The record rules are defined for **read** access. Write/create/delete permissions are governed by ACLs and any other security rules in your database.
 - If a user has **All Pricelists**, the unrestricted domain will override the restricted visibility (by design).
-- This addon is placed under an `odoo-16` folder; the manifest version is set to `16.0.1.0.0` accordingly.
+- Users that have neither group are not restricted (same behaviour as previous versions).
+- Tests: `odoo-bin ... -i restrict_pricelist_users --test-enable --test-tags /restrict_pricelist_users`
 
 ## Quick test
 1. Create two users: U1 and U2 (both in **Own Pricelists**).
