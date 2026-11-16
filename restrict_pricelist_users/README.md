@@ -1,58 +1,115 @@
 # Restrict Pricelist Users
 
-Odoo addon that restricts access to **Product Pricelists** using a Many2many field (`allowed_users`) and **Record Rules**.
+![Banner](static/description/banner.png)
 
-## What it does
-- Adds an **Allowed Users** field (`allowed_users`) on `product.pricelist`.
-- Displays the field on the Pricelist form (right after `company_id`) as tags.
-- Defines two security groups:
-  - **Own Pricelists**: can only *see* pricelists where:
-    - the current user is in `allowed_users`, **or**
-    - `allowed_users` is empty (treated as unrestricted)
-  - **All Pricelists**: can see all pricelists (empty domain) and implies **Own Pricelists**.
+Control **which salespeople can see which pricelists** in Odoo.
 
-## Installation
-1. Copy the addon to your addons path.
-2. Restart Odoo.
-3. Apps → Update Apps List.
-4. Install **Restrict Pricelist Users**.
+By default every internal user can see every pricelist in the database. That is often
+not what you want: wholesale, distributor or VIP prices should only be visible to the
+people who actually work with those customers. This module adds an **Allowed Users**
+field on each pricelist and a pair of access groups, so you decide per pricelist and
+per user who sees what. Restricted users only see their own pricelists in the
+pricelist menu, on quotations, on customers and anywhere else a pricelist is selected.
+
+- **Version:** 20.0 (also available for 16.0, 17.0, 18.0 and 19.0 on the matching branches)
+- **Depends on:** `sale`
+- **Editions:** Community and Enterprise
+- **License:** OPL-1
+
+## Features
+
+- **Allowed Users** field on every pricelist, shown as tags on the pricelist form.
+- Two access levels, grouped under **Sales → Pricelists** on the user form:
+  - **Own Pricelists**: the user only sees pricelists where they are in *Allowed Users*,
+    plus pricelists that have no *Allowed Users* at all (treated as public).
+  - **All Pricelists**: the user sees every pricelist (for sales managers).
+- Users with neither group keep the standard Odoo behaviour (they see all pricelists), so
+  installing the module does not hide anything until you assign the groups.
+- Group changes apply immediately, without logging out.
 
 ## Configuration
-### 1) Assign groups to users
-- Settings → Users & Companies → Users
-- On the user:
-  - for restricted access: enable **Own Pricelists**
-  - for full access: enable **All Pricelists**
 
-### 2) Configure each Pricelist
-- Sales → Products → Pricelists (or your equivalent menu)
-- Set **Allowed Users**:
-  - if empty: visible to users in **Own Pricelists** (acts like “public” within that group)
-  - if set: only those users (within **Own Pricelists**) will see it
+### 1. Enable pricelists
 
-## How it works (technical)
-- View: `views/product_pricelist_views.xml`
-  - inserts `allowed_users` into the `product.pricelist` form view
-- Model: `models/product_pricelist.py`
-  - adds `allowed_users = fields.Many2many('res.users', ...)`
+*Sales → Configuration → Settings → Pricing → Pricelists* (standard Odoo setting).
+
+### 2. Give users an access level
+
+*Settings → Users & Companies → Users*, open a user, tab **Access Rights**, section
+**Sales**, field **Pricelists**:
+
+- **Own Pricelists** for restricted salespeople;
+- **All Pricelists** for managers who must see everything;
+- leave it empty (*Not restricted*) to keep the standard behaviour.
+
+![Pricelists access level on the user form](static/description/user_groups.png)
+
+### 3. Choose who can use each pricelist
+
+*Sales → Products → Pricelists*, open a pricelist and fill **Allowed Users**.
+Leave it empty to make the pricelist visible to everybody.
+
+![Allowed Users on the pricelist form](static/description/pricelist_allowed_users.png)
+
+## Example
+
+| Pricelist | Allowed Users |
+|---|---|
+| Default | *(empty: public)* |
+| Retail - Public | *(empty: public)* |
+| Wholesale - Ana | Ana Popescu |
+| VIP Customers | Ana Popescu, Mihai Ionescu |
+| Distributors - Mihai | Mihai Ionescu |
+| Export - Management | Elena Marin |
+
+Ana and Mihai have **Own Pricelists**, Elena has **All Pricelists**.
+
+**Ana** sees the public pricelists, her wholesale pricelist and the shared VIP pricelist:
+
+![Pricelists seen by Ana](static/description/pricelist_list_ana.png)
+
+**Mihai** sees the public pricelists, his distributor pricelist and the shared VIP pricelist:
+
+![Pricelists seen by Mihai](static/description/pricelist_list_mihai.png)
+
+**Elena** (All Pricelists) sees everything, including pricelists assigned to other users:
+
+![Pricelists seen by Elena](static/description/pricelist_list_elena.png)
+
+## Technical notes
+
+- Model: `models/product_pricelist.py` adds
+  `allowed_users = fields.Many2many('res.users')` on `product.pricelist`.
+- View: `views/product_pricelist_views.xml` inserts the field after `company_id` on the
+  pricelist form.
 - Security: `security/pricelist_rules.xml`
-  - Groups live under the **Pricelists** privilege (`res.groups.privilege`) in the Sales category.
-  - Odoo 20 uses `ir.access` (permissions per group are OR-ed, restrictions without group are AND-ed),
-    so visibility is enforced by one global *restriction* on read:
-    - user in **Own Pricelists** and not in **All Pricelists**:
+  - groups `group_view_own_pricelists` and `group_view_all_pricelists` (the latter implies
+    the former) under the `res.groups.privilege` **Pricelists**, category Sales;
+  - one `ir.access` record (Odoo 20 replaced `ir.rule` / `ir.model.access` with
+    `ir.access`). Group permissions are OR-ed with the read permission every internal user
+    already has on pricelists, so the filter is a global *restriction* on read whose domain
+    depends on the user's groups:
+    - user in *Own Pricelists* but not in *All Pricelists*:
       `['|', ('allowed_users', 'in', user.id), ('allowed_users', '=', False)]`
-    - any other user: `[]` (no restriction)
+    - any other user: `[]` (no restriction).
+- Only **read** access is restricted. Create, write and delete rights on pricelists still come
+  from the standard Odoo groups (e.g. *Products: Administrator*).
 
-## Notes / limitations
-- The record rules are defined for **read** access. Write/create/delete permissions are governed by ACLs and any other security rules in your database.
-- If a user has **All Pricelists**, the unrestricted domain will override the restricted visibility (by design).
-- Users that have neither group are not restricted (same behaviour as previous versions).
-- Tests: `odoo-bin ... -i restrict_pricelist_users --test-enable --test-tags /restrict_pricelist_users`
+## Tests
 
-## Quick test
-1. Create two users: U1 and U2 (both in **Own Pricelists**).
-2. Create two pricelists:
-   - PL1: Allowed Users = U1
-   - PL2: Allowed Users = (empty)
-3. Login as U1: you should see PL1 and PL2.
-4. Login as U2: you should only see PL2.
+```bash
+odoo-bin -d <test_db> --addons-path=<odoo>/addons,<path to this repo> \
+    -i restrict_pricelist_users --test-enable \
+    --test-tags /restrict_pricelist_users --stop-after-init
+```
+
+The suite (`tests/test_pricelist_access.py`) checks visibility for an allowed user, another
+restricted user, an *All Pricelists* user, a user without groups, and an immediate group change.
+
+## Demo
+
+Video: <https://www.youtube.com/watch?v=2kjrHfIb4Dc>
+
+## Support
+
+Author: Banica Daniel. For support or customization requests, please contact the author.
