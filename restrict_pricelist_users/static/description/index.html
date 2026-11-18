@@ -1,103 +1,98 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<body>
+<section style="max-width:1000px;margin:0 auto;padding:16px;font-family:'Segoe UI',Roboto,Arial,sans-serif;color:#1f2430;line-height:1.55;">
 
-<div style="max-width:900px;margin:auto;">
+    <img src="banner.png" alt="Restrict Pricelist Users" style="width:100%;border-radius:14px;display:block;"/>
 
-    <h2 style="text-align:center;">
-        Restrict Pricelist Users – User-Based Pricelist Access Control
+    <h2 style="text-align:center;margin:36px 0 8px;font-size:32px;color:#4A2E6B;">
+        Show each salesperson only the pricelists they are allowed to use
     </h2>
-
-    <p style="text-align:center;">
-        Restrict access to Product Pricelists by user in Odoo 16, 17 and 18.<br/>
-        Control which users can see specific pricelists using native Odoo security groups and record rules.
+    <p style="text-align:center;font-size:18px;color:#5b6070;margin:0 auto 8px;max-width:760px;">
+        Wholesale, distributor or VIP prices should only be visible to the people who work with those customers.
+        Add <b>Allowed Users</b> on a pricelist and Odoo hides it from everybody else &#8212; in the pricelist menu,
+        on quotations, on customers and everywhere a pricelist can be selected.
+    </p>
+    <p style="text-align:center;margin:18px 0 0;">
+        <span style="display:inline-block;margin:4px;padding:6px 14px;border-radius:999px;background:#F3ECF8;color:#6A4392;font-weight:600;">Odoo 16 &#183; 17 &#183; 18 &#183; 19 &#183; 20</span>
+        <span style="display:inline-block;margin:4px;padding:6px 14px;border-radius:999px;background:#F3ECF8;color:#6A4392;font-weight:600;">Community &amp; Enterprise</span>
+        <span style="display:inline-block;margin:4px;padding:6px 14px;border-radius:999px;background:#F3ECF8;color:#6A4392;font-weight:600;">Depends only on Sales</span>
     </p>
 
-    <hr/>
+    <h3 style="margin:44px 0 14px;font-size:24px;color:#4A2E6B;">Key features</h3>
+    <table style="width:100%;border-collapse:separate;border-spacing:12px;">
+        <tr>
+            <td style="width:50%;vertical-align:top;background:#FAF7FC;border:1px solid #ECE3F3;border-radius:12px;padding:18px;">
+                <b style="color:#6A4392;">Allowed Users per pricelist</b><br/>
+                Pick the users who may use a pricelist. Leave it empty and the pricelist stays public.
+            </td>
+            <td style="width:50%;vertical-align:top;background:#FAF7FC;border:1px solid #ECE3F3;border-radius:12px;padding:18px;">
+                <b style="color:#6A4392;">Two access levels</b><br/>
+                <i>Own Pricelists</i> for salespeople, <i>All Pricelists</i> for managers who must see everything.
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align:top;background:#FAF7FC;border:1px solid #ECE3F3;border-radius:12px;padding:18px;">
+                <b style="color:#6A4392;">Safe to install</b><br/>
+                Users without either group keep the standard Odoo behaviour. Nothing is hidden until you assign the groups.
+            </td>
+            <td style="vertical-align:top;background:#FAF7FC;border:1px solid #ECE3F3;border-radius:12px;padding:18px;">
+                <b style="color:#6A4392;">Native Odoo security</b><br/>
+                Built on standard access rules, no overrides of core methods. Group changes apply immediately.
+            </td>
+        </tr>
+    </table>
 
-    <h3>Overview</h3>
-    <p>
-        <b>Restrict Pricelist Users</b> allows you to control the visibility of Product Pricelists
-        based on the logged-in user. It is especially useful for companies using multiple pricelists
-        who want to avoid pricing confusion and unauthorized access.
+    <h3 style="margin:44px 0 14px;font-size:24px;color:#4A2E6B;">Configuration</h3>
+
+    <p style="font-size:17px;margin:0 0 6px;"><b>1. Enable pricelists</b></p>
+    <p style="margin:0 0 22px;color:#5b6070;"><i>Sales &#8594; Configuration &#8594; Settings &#8594; Pricing &#8594; Pricelists</i> (standard Odoo setting).</p>
+
+    <p style="font-size:17px;margin:0 0 6px;"><b>2. Give users an access level</b></p>
+    <p style="margin:0 0 12px;color:#5b6070;">
+        Activate the developer mode, open <i>Settings &#8594; Users &amp; Companies &#8594; Groups</i> and add the users
+        on the <b>Users</b> tab of <b>Sales / Own Pricelists</b> (restricted salespeople) or <b>Sales / All Pricelists</b> (managers).
+        Users in neither group keep the standard behaviour.
     </p>
+    <img src="user_groups.png" alt="Users of the Own Pricelists group" style="width:100%;border:1px solid #e3e5ea;border-radius:10px;box-shadow:0 6px 18px rgba(31,36,48,.08);"/>
 
-    <h3>Key Features</h3>
-    <ul>
-        <li>User-based pricelist visibility</li>
-        <li>Many2many <b>Allowed Users</b> field on pricelists</li>
-        <li>Public or restricted pricelists</li>
-        <li>Native Odoo record rules (no overrides)</li>
-        <li>Works with Community & Enterprise</li>
-        <li>Lightweight and easy to configure</li>
-    </ul>
-
-    <h3>How It Works</h3>
-    <p>
-        The module adds an <b>Allowed Users</b> field on each Product Pricelist.
+    <p style="font-size:17px;margin:30px 0 6px;"><b>3. Choose who can use each pricelist</b></p>
+    <p style="margin:0 0 12px;color:#5b6070;">
+        <i>Sales &#8594; Products &#8594; Pricelists</i>, open a pricelist and fill <b>Allowed Users</b>. Leave it empty to make the pricelist visible to everybody.
     </p>
-    <ul>
-        <li>If the field is empty, the pricelist is visible to all restricted users</li>
-        <li>If users are selected, only those users can see the pricelist</li>
+    <img src="pricelist_allowed_users.png" alt="Allowed Users on the pricelist form" style="width:100%;border:1px solid #e3e5ea;border-radius:10px;box-shadow:0 6px 18px rgba(31,36,48,.08);"/>
+
+    <h3 style="margin:44px 0 14px;font-size:24px;color:#4A2E6B;">Example</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:16px;">
+        <tr style="background:#F3ECF8;color:#4A2E6B;">
+            <th style="text-align:left;padding:10px 14px;">Pricelist</th>
+            <th style="text-align:left;padding:10px 14px;">Allowed Users</th>
+        </tr>
+        <tr><td style="padding:9px 14px;border-bottom:1px solid #eee;">Default</td><td style="padding:9px 14px;border-bottom:1px solid #eee;color:#8a8f9c;"><i>empty: public</i></td></tr>
+        <tr><td style="padding:9px 14px;border-bottom:1px solid #eee;">Retail - Public</td><td style="padding:9px 14px;border-bottom:1px solid #eee;color:#8a8f9c;"><i>empty: public</i></td></tr>
+        <tr><td style="padding:9px 14px;border-bottom:1px solid #eee;">Wholesale - Ana</td><td style="padding:9px 14px;border-bottom:1px solid #eee;">Ana Popescu</td></tr>
+        <tr><td style="padding:9px 14px;border-bottom:1px solid #eee;">VIP Customers</td><td style="padding:9px 14px;border-bottom:1px solid #eee;">Ana Popescu, Mihai Ionescu</td></tr>
+        <tr><td style="padding:9px 14px;border-bottom:1px solid #eee;">Distributors - Mihai</td><td style="padding:9px 14px;border-bottom:1px solid #eee;">Mihai Ionescu</td></tr>
+        <tr><td style="padding:9px 14px;">Export - Management</td><td style="padding:9px 14px;">Elena Marin</td></tr>
+    </table>
+    <p style="margin:14px 0 26px;color:#5b6070;">Ana and Mihai have <b>Own Pricelists</b>, Elena has <b>All Pricelists</b>.</p>
+
+    <p style="font-size:17px;margin:0 0 10px;"><b>Ana</b> sees the public pricelists, her wholesale pricelist and the shared VIP pricelist:</p>
+    <img src="pricelist_list_ana.png" alt="Pricelists seen by Ana" style="width:100%;border:1px solid #e3e5ea;border-radius:10px;box-shadow:0 6px 18px rgba(31,36,48,.08);"/>
+
+    <p style="font-size:17px;margin:30px 0 10px;"><b>Mihai</b> sees the public pricelists, his distributor pricelist and the shared VIP pricelist:</p>
+    <img src="pricelist_list_mihai.png" alt="Pricelists seen by Mihai" style="width:100%;border:1px solid #e3e5ea;border-radius:10px;box-shadow:0 6px 18px rgba(31,36,48,.08);"/>
+
+    <p style="font-size:17px;margin:30px 0 10px;"><b>Elena</b> (All Pricelists) sees everything, including pricelists assigned to other users:</p>
+    <img src="pricelist_list_elena.png" alt="Pricelists seen by Elena" style="width:100%;border:1px solid #e3e5ea;border-radius:10px;box-shadow:0 6px 18px rgba(31,36,48,.08);"/>
+
+    <h3 style="margin:44px 0 14px;font-size:24px;color:#4A2E6B;">Good to know</h3>
+    <ul style="padding-left:22px;color:#3a3f4c;">
+        <li>Restricted users can only open and change the pricelists they can see. Creating, editing and deleting otherwise follows the standard Odoo groups (e.g. <i>Products: Administrator</i>).</li>
+        <li>A pricelist with an empty <b>Allowed Users</b> field is visible to everybody.</li>
     </ul>
 
-    <h3>Security Groups</h3>
-    <ul>
-        <li>
-            <b>Own Pricelists</b><br/>
-            Users can only see:
-            <ul>
-                <li>Pricelists where they are included in Allowed Users</li>
-                <li>Pricelists where Allowed Users is empty</li>
-            </ul>
-        </li>
-        <li>
-            <b>All Pricelists</b><br/>
-            Users can see all pricelists (unrestricted access)
-        </li>
-    </ul>
-
-    <h3>Configuration</h3>
-    <ol>
-        <li>
-            Assign user groups:<br/>
-            <i>Settings → Users & Companies → Users</i>
-        </li>
-        <li>
-            Configure pricelists:<br/>
-            <i>Sales → Products → Pricelists → Allowed Users</i>
-        </li>
-    </ol>
-
-    <h3>Example</h3>
-    <ul>
-        <li>User U1 sees PL1 and PL2</li>
-        <li>User U2 sees only PL2</li>
-    </ul>
-
-    <h3>Compatibility</h3>
-    <ul>
-        <li>Odoo 16.0</li>
-        <li>Odoo 17.0</li>
-        <li>Odoo 18.0</li>
-        <li>Community & Enterprise</li>
-    </ul>
-
-    <p style="text-align:center;margin-top:30px;">
+    <p style="text-align:center;margin:44px 0 8px;">
+        <a href="https://www.youtube.com/watch?v=2kjrHfIb4Dc" target="_blank" style="display:inline-block;padding:12px 28px;border-radius:999px;background:#6A4392;color:#ffffff;font-weight:600;text-decoration:none;">&#9654; Watch the demo video</a>
+    </p>
+    <p style="text-align:center;color:#8a8f9c;margin:18px 0 0;">
         <i>For support or customization requests, please contact the author.</i>
     </p>
-
-    <h3>1. Pricelist Form</h3>
-    <p>Configure which users can access each pricelist using the <b>Allowed Users</b> field:</p>
-    <img src="pricelist_allowed_users.png" style="max-width:100%; border:1px solid #ccc;"/>
-
-    <h3>2. User Groups</h3>
-    <p>Assign restricted or full access to users via security groups:</p>
-    <img src="user_groups.png" style="max-width:100%; border:1px solid #ccc;"/>
-
-</div>
-
-</body>
-</html>
+</section>
